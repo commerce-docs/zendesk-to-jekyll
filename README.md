@@ -1,5 +1,6 @@
-This simple Ruby script converts a JSON file returned by [Magento Help Center](https://support.magento.com/hc/en-us) ZenDesk API to Jekyll format using kramdown library.
-To be able to use it, you'll need the kramdown gem:
+This simple Ruby script converts a JSON response returned by [Magento Help Center](https://support.magento.com/hc/en-us) ZenDesk API to [Jekyll](https://jekyllrb.com/) format using [kramdown](https://github.com/gettalong/kramdown) library.
+
+You'll need the kramdown gem to use this:
 
 ```bash
 gem install kramdown
@@ -10,3 +11,5 @@ Now, if you want to generate Jekyll topics from a JSON file _how-to.json_ that c
 ```bash
 ruby zendesk-to-jekyll.rb how-to.json
 ```
+
+Find generated topics in the `output` directory.
