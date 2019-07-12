@@ -1,22 +1,10 @@
 require 'yaml'
-require 'kramdown'
-
-module Converter
-  DEFAULT_OPTIONS = {
-    html_to_native: true,
-    line_width: 1000,
-    input: 'html'
-  }
-
-  def self.kramdownify(string, options = {})
-    document = Kramdown::Document.new(string, DEFAULT_OPTIONS.merge(options))
-    document.to_kramdown
-  end
-end
+require_relative 'topic'
+require_relative 'imaginizer'
 
 @topics = []
-Topic = Struct.new(:id, :filename, :title, :group, :labels, :html_content, :kramdown_content)
 OUTPUT_DIR = 'output'
+IMAGE_DIR = File.join(OUTPUT_DIR, 'images')
 
 def file
   ARGV[0] || raise('Provide a JSON file with content from Zendesk. For example, ruby zendesk-to-kramdown.rb how-to.json')
@@ -28,20 +16,15 @@ end
 
 def generate_topics
   articles.each do |article|
-    topic = Topic.new
-    topic.id = article['id']
-    topic.filename = article['name'].downcase.gsub(' ', '-').concat('.md')
-    topic.title = article['title']
-    topic.group = article['section_id']
-    topic.labels = article['label_names']
-    topic.html_content = article['body']
-    topic.kramdown_content = convert_html(article['body'])
-    @topics << topic
+    @topics << Topic.new do |t|
+      t.id = article['id']
+      t.filename = article['name'].downcase.gsub(' ', '-').concat('.md')
+      t.title = article['title']
+      t.group = article['section_id']
+      t.labels = article['label_names']
+      t.html_content = article['body']
+    end
   end
-end
-
-def convert_html(content)
-  Converter.kramdownify(content)
 end
 
 def topics
@@ -60,9 +43,20 @@ group: #{topic.group}
 
 #{topic.kramdown_content}
     ).strip
-
-    File.write("output/#{topic.filename}", string)
+    file_path = File.join(OUTPUT_DIR, topic.filename)
+    File.write(file_path, string)
   end
 end
 
+def download_images
+  files_to_read_pattern = File.join OUTPUT_DIR, '**', '*.md'
+  Dir.glob(files_to_read_pattern) do |file|
+    to_dir = IMAGE_DIR
+    from_file = File.read file
+    Imaginizer.download_all(from_file, to_dir)
+  end
+end
+
+
 write_topics
+download_images

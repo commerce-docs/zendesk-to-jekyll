@@ -12,4 +12,4 @@ Now, if you want to generate Jekyll topics from a JSON file _how-to.json_ that c
 ruby zendesk-to-jekyll.rb how-to.json
 ```
 
-Find generated topics in the `output` directory.
+Find the converted content in the `output` directory.
