@@ -9,7 +9,7 @@ gem install kramdown
 Now, if you want to generate Jekyll topics from a JSON file _how-to.json_ that contains ZenDesk API response with several topics, try this:
 
 ```bash
-ruby zendesk-to-jekyll.rb how-to.json
+ruby zendesk_jekyllizer.rb how-to.json
 ```
 
 Find the converted content in the `output` directory.
