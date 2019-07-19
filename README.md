@@ -14,4 +14,4 @@ ruby zendesk_jekyllizer.rb how-to.json
 
 Find the converted content in the `output` directory.
 
-[`config.yml`(config.yml) configures directories for output.
+[`config.yml`](config.yml) configures directories for output.
