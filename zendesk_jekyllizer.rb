@@ -1,30 +1,34 @@
 # frozen_string_literal: true
 
 require 'yaml'
-require_relative 'lib/generator'
-require_relative 'lib/imaginizer'
-require_relative 'lib/urlizer'
-require_relative 'lib/indexer'
-require 'pry'
+
+Dir.glob('lib/**/*.rb') { |file| require_relative(file) }
 
 @topics = []
-OUTPUT_DIR = 'output'
-IMAGE_DIR = 'images'
+@config = Config.instance.load_from_yaml
+OUTPUT_DIR = @config['output_directory']
+IMAGE_DIR = @config['directory_with_images']
 FULL_IMAGE_DIR = File.join(OUTPUT_DIR, IMAGE_DIR)
 FILES_TO_READ_PATTERN = File.join OUTPUT_DIR, '**', '*.md'
 INDEX_FILE = 'index.yml'
+
 
 def from_file
   ARGV[0] || raise('Provide a JSON file with content from Zendesk. For example, ruby zendesk-to-kramdown.rb how-to.json')
 end
 
-def topics
-  @topics = Generator.generate_topics(from_file) if @topics.empty?
+def config
+  @config.config
+end
+
+def generate_topics
+  @topics = Generator.generate_topics(from_file)
 end
 
 def write_topics_to(dir)
+  generate_topics
   Dir.mkdir(dir) unless Dir.exist?(dir)
-  topics.each do |topic|
+  @topics.each do |topic|
     string = %(
 ---
 title: #{topic.title}
@@ -64,8 +68,8 @@ def convert_topic_links!(content)
   Urlizer.convert_topic_links!(content, topics_index)
 end
 
-def create_index_in(file)
-  Indexer.write_index_in(file)
+def create_index_in(file, from_topics)
+  Indexer.write_index_in(file, from_topics)
 end
 
 puts 'Writing topics'
@@ -75,7 +79,7 @@ puts 'Downloading linked images'
 download_images_to FULL_IMAGE_DIR
 
 puts 'Generating index file for topics'
-create_index_in INDEX_FILE
+create_index_in INDEX_FILE, @topics
 
 puts 'Converting links to images and internal topics'
 normalize_topics

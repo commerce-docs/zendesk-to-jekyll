@@ -1,0 +1,5 @@
+# The directory where all generated files go.
+output_directory: output
+
+# The directory where images will be downloaded. It is located in the output directory.
+directory_with_images: images
