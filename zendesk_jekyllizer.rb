@@ -12,7 +12,6 @@ FULL_IMAGE_DIR = File.join(OUTPUT_DIR, IMAGE_DIR)
 FILES_TO_READ_PATTERN = File.join OUTPUT_DIR, '**', '*.md'
 INDEX_FILE = 'index.yml'
 
-
 def from_file
   ARGV[0] || raise('Provide a JSON file with content from Zendesk. For example, ruby zendesk-to-kramdown.rb how-to.json')
 end

@@ -1,10 +1,11 @@
+# frozen_string_literal: true
+
 require 'net/http'
-# This module detects images from the provided string and 
+# This module detects images from the provided string and
 # downloads to the provided directory (default is 'output/images').
 
 module Imaginizer
-
-  URL = /\!\[[^\[]+\]\(([^\(]+)\)/
+  URL = /\!\[[^\[]+\]\(([^\(]+?)\)/.freeze
 
   def self.download_all(string, output_dir = 'output/images')
     string.scan URL do |url|
@@ -23,5 +24,4 @@ module Imaginizer
     image = load_image url
     File.write(file_path, image)
   end
-
 end
